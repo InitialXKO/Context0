@@ -4,8 +4,9 @@
   "description": "A Model Context Protocol (MCP) service.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js"
+    "build": "node ./node_modules/typescript/bin/tsc",
+    "start": "node dist/index.js",
+    "test": "npm run build && node tests/run-tests.js"
   },
   "keywords": [],
   "author": "",
