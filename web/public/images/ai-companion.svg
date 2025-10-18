@@ -1,0 +1,35 @@
+<svg width="480" height="320" viewBox="0 0 480 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cloud" x1="80" y1="40" x2="400" y2="280" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EFF6FF" />
+      <stop offset="1" stop-color="#DBEAFE" />
+    </linearGradient>
+    <linearGradient id="orb" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#93C5FD" />
+      <stop offset="1" stop-color="#2563EB" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="480" height="320" rx="32" fill="url(#cloud)" />
+  <g filter="url(#shadow)" transform="translate(120 68)">
+    <rect x="0" y="0" width="240" height="180" rx="28" fill="#FFFFFF" />
+    <rect x="26" y="38" width="188" height="12" rx="6" fill="#1D4ED8" fill-opacity="0.45" />
+    <rect x="26" y="62" width="140" height="12" rx="6" fill="#1D4ED8" fill-opacity="0.25" />
+    <rect x="26" y="86" width="172" height="12" rx="6" fill="#2563EB" fill-opacity="0.15" />
+    <rect x="26" y="138" width="120" height="28" rx="14" fill="#2563EB" fill-opacity="0.2" />
+  </g>
+  <defs>
+    <filter id="shadow" x="100" y="48" width="280" height="220" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#1D4ED8" flood-opacity="0.18" />
+    </filter>
+  </defs>
+  <g transform="translate(330 70)">
+    <circle cx="0" cy="0" r="38" fill="url(#orb)" />
+    <path d="M-16 -4C-12 -22 12 -22 16 -4" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+    <circle cx="-12" cy="8" r="4" fill="#FFFFFF" />
+    <circle cx="12" cy="8" r="4" fill="#FFFFFF" />
+  </g>
+  <g transform="translate(340 200)">
+    <rect x="-40" y="0" width="80" height="80" rx="20" fill="#2563EB" fill-opacity="0.14" />
+    <path d="M-10 30L0 45L26 15" stroke="#2563EB" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>
