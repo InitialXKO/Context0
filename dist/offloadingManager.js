@@ -53,53 +53,55 @@ class OffloadingManager {
         return sentences[0]?.trim().substring(0, 50) || content.substring(0, 50);
     }
     async offloadContent(fullContent, parentId, summary, keywords) {
-        // Validate parent exists if specified
         if (parentId && !this.internalContext.has(parentId)) {
             throw new Error(`Parent segment with ID '${parentId}' does not exist`);
         }
+        const baseMarker = this.generateMarker(fullContent);
         const rootId = this.generateId(parentId);
-        const rootMarker = this.generateMarker(fullContent);
+        const rootSummary = summary ?? baseMarker;
+        const rootKeywords = keywords ?? [];
+        const initialChunk = fullContent.substring(0, MAX_SEGMENT_CONTENT_LENGTH);
+        const rootSegment = {
+            id: rootId,
+            marker: baseMarker,
+            full_content: initialChunk,
+            parent_id: parentId,
+            child_references: [],
+            summary: rootSummary,
+            keywords: rootKeywords,
+        };
+        this.internalContext.set(rootId, rootSegment);
+        let remainingContent = fullContent.slice(initialChunk.length);
         const childReferences = [];
-        let currentContent = fullContent;
-        let segmentIndex = 0;
-        while (currentContent.length > 0) {
-            const segmentId = this.generateId(rootId);
-            const segmentMarker = this.generateMarker(currentContent);
-            const contentToStore = currentContent.substring(0, MAX_SEGMENT_CONTENT_LENGTH);
-            const segment = {
-                id: segmentId,
-                marker: segmentMarker,
-                full_content: contentToStore,
-                parent_id: segmentIndex === 0 ? parentId : rootId,
+        while (remainingContent.length > 0) {
+            const childId = this.generateId(rootId);
+            const childChunk = remainingContent.substring(0, MAX_SEGMENT_CONTENT_LENGTH);
+            const childMarker = this.generateMarker(childChunk);
+            const childSegment = {
+                id: childId,
+                marker: childMarker,
+                full_content: childChunk,
+                parent_id: rootId,
                 child_references: [],
-                summary: segmentIndex === 0 ? summary : `Continuation of ${rootMarker}`,
-                keywords: segmentIndex === 0 ? keywords : [],
-                is_continuation_segment: segmentIndex > 0 ? true : undefined,
+                summary: `Continuation of ${baseMarker}`,
+                keywords: [],
+                is_continuation_segment: true,
             };
-            this.internalContext.set(segmentId, segment);
-            if (segmentIndex > 0) {
-                childReferences.push({ marker: segmentMarker, id: segmentId });
-            }
-            currentContent = currentContent.substring(contentToStore.length);
-            segmentIndex++;
+            this.internalContext.set(childId, childSegment);
+            childReferences.push({ marker: childMarker, id: childId });
+            remainingContent = remainingContent.slice(childChunk.length);
         }
-        // Update the root segment with child references
-        const rootSegment = this.internalContext.get(rootId);
-        if (rootSegment) {
+        if (childReferences.length > 0) {
             rootSegment.child_references = childReferences;
-            // If there are child segments, update the root marker to indicate continuation
-            if (childReferences.length > 0) {
-                rootSegment.marker = `${rootSegment.marker} (continued)`;
-            }
+            rootSegment.marker = `${baseMarker} (continued)`;
         }
-        // If a parentId was provided, update the parent's child_references
         if (parentId) {
             const parent = this.internalContext.get(parentId);
-            parent.child_references.push({ marker: rootMarker, id: rootId });
-            parent.marker = `${parent.marker} [${rootMarker} (ID: ${rootId})]`;
+            parent.child_references.push({ marker: rootSegment.marker, id: rootId });
+            parent.marker = `${parent.marker} [${baseMarker} (ID: ${rootId})]`;
         }
         await this.saveInternalContext();
-        return this.internalContext.get(rootId); // 返回主段的 ContextSegment 对象
+        return rootSegment;
     }
     getSegment(id) {
         return this.internalContext.get(id) || null;
