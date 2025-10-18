@@ -1,5 +1,0 @@
-{
-  "injectedPromptTemplate": "\n\nImportant: Some previous conversation segments have been offloaded to save context length. Here are their summaries and keywords:\n{offloaded_segments_info}If you need the full content of any offloaded segment, please suggest calling the 'retrieveSegment' tool with its ID.\n\nWhen calling the 'offloadContent' tool, you MUST provide:\n- summary: A concise summary of the content being offloaded\n- keywords: Up to 5 main keywords, separated by commas\n\nExample: offloadContent({\"content\": \"...\", \"parentId\": null, \"summary\": \"Summary here\", \"keywords\": \"keyword1, keyword2\"})",
-  "summarizationPromptTemplate": "Please provide a concise summary of the following text, focusing on key information and main topics: {text_to_summarize}",
-  "keywordExtractionPromptTemplate": "Please extract up to 5 main keywords from the following text, separated by commas: {text_to_extract_keywords_from}"
-}
