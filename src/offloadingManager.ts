@@ -1,6 +1,5 @@
 import { ContextManager } from "./contextManager.js";
 import { ContextSegment } from "./contextSegment.js";
-import { v4 as uuidv4 } from 'uuid';
 
 const MAX_SEGMENT_CONTENT_LENGTH = 2000; // Define a maximum content length for a single segment
 

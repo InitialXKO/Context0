@@ -35,13 +35,11 @@ class ContextProxy {
         // const offloadingManager = this.agentCore.getOffloadingManager();
         // const contextManager = this.agentCore.getContextManager();
         const injectedPromptTemplate = this.agentCore.getInjectedPromptTemplate();
-        let currentContextContent = JSON.stringify(oldContextMessages);
-        let finalMessages = [];
-        let injectedPrompt = "";
-        const offloadedSegmentsInfo = [];
-        for (const msg of oldContextMessages) {
-            finalMessages.push(msg);
-        }
+        const currentContextContent = JSON.stringify(oldContextMessages);
+        const finalMessages = [...oldContextMessages];
+        const injectedPrompt = typeof injectedPromptTemplate === "string" && injectedPromptTemplate.length > 0
+            ? ` ${injectedPromptTemplate}`
+            : "";
         finalMessages.push(lastUserMessage);
         // 将注入的提示添加到最后一条用户消息中
         finalMessages[finalMessages.length - 1].content += injectedPrompt;

@@ -1,5 +1,4 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import { AgentCore } from "./agentCore.js"; // 导入 AgentCore
 
 // 定义 ContextProxy 类
@@ -46,18 +45,17 @@ export class ContextProxy {
     // const contextManager = this.agentCore.getContextManager();
     const injectedPromptTemplate = this.agentCore.getInjectedPromptTemplate();
 
-    let currentContextContent = JSON.stringify(oldContextMessages);
-    let finalMessages = [];
-    let injectedPrompt = "";
-    const offloadedSegmentsInfo: { id: string; summary: string; marker: string; keywords: string[] }[] = [];
+    const currentContextContent = JSON.stringify(oldContextMessages);
+    const finalMessages = [...oldContextMessages];
+    const injectedPrompt =
+      typeof injectedPromptTemplate === "string" && injectedPromptTemplate.length > 0
+        ? ` ${injectedPromptTemplate}`
+        : "";
 
-    for (const msg of oldContextMessages) {
-       finalMessages.push(msg);
-     }
     finalMessages.push(lastUserMessage);
 
-     // 将注入的提示添加到最后一条用户消息中
-     finalMessages[finalMessages.length - 1].content += injectedPrompt;
+    // 将注入的提示添加到最后一条用户消息中
+    finalMessages[finalMessages.length - 1].content += injectedPrompt;
 
     // Construct the request with potentially modified messages
     const injectedRequestObject = { ...parsedRequest, messages: finalMessages };
